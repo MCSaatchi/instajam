@@ -31,7 +31,7 @@
             </div>
             
             <div class="content"><div class='highlight'><pre>(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">root, factory</span>) </span>{
-<span class="hljs-pi">
+<span class="hljs-meta">
   'use strict'</span>;
 
   <span class="hljs-keyword">if</span> (<span class="hljs-keyword">typeof</span> define === <span class="hljs-string">'function'</span> &amp;&amp; define.amd) {</pre></div></div>
@@ -87,7 +87,7 @@
   }
 
 }(<span class="hljs-keyword">this</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">exports</span>) </span>{
-<span class="hljs-pi">
+<span class="hljs-meta">
   'use strict'</span>;</pre></div></div>
             
         </li>
@@ -189,11 +189,11 @@ instead of requesting our own</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-10">&#182;</a>
               </div>
-              <p>set the local storage param</p>
+              <p>set the accessToken</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>        localStorage.setItem(<span class="hljs-string">'instagram_access_token'</span>, options.accessToken);</pre></div></div>
+            <div class="content"><div class='highlight'><pre>        <span class="hljs-keyword">this</span>.accessToken = options.accessToken;</pre></div></div>
             
         </li>
         
@@ -203,21 +203,6 @@ instead of requesting our own</p>
               
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-11">&#182;</a>
-              </div>
-              <p>…and set the authenticated property to true</p>
-
-            </div>
-            
-            <div class="content"><div class='highlight'><pre>        <span class="hljs-keyword">this</span>.authenticated = <span class="hljs-literal">true</span>;</pre></div></div>
-            
-        </li>
-        
-        
-        <li id="section-12">
-            <div class="annotation">
-              
-              <div class="pilwrap ">
-                <a class="pilcrow" href="#section-12">&#182;</a>
               </div>
               <p>skip the normal authentication</p>
 
@@ -229,11 +214,11 @@ instead of requesting our own</p>
         </li>
         
         
-        <li id="section-13">
+        <li id="section-12">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-13">&#182;</a>
+                <a class="pilcrow" href="#section-12">&#182;</a>
               </div>
               <p>When the library is initialized, verify whether
 a user is currently authenticated.</p>
@@ -249,15 +234,32 @@ a user is currently authenticated.</p>
         </li>
         
         
+        <li id="section-13">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-13">&#182;</a>
+              </div>
+              <h1 id="authentication">Authentication</h1>
+
+            </div>
+            
+        </li>
+        
+        
         <li id="section-14">
             <div class="annotation">
               
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-14">&#182;</a>
               </div>
-              <h1 id="authentication">Authentication</h1>
+              <p>Attempts to authenticate a user by
+parsing data from the URL hash.</p>
 
             </div>
+            
+            <div class="content"><div class='highlight'><pre>
+  exports.authenticate = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{</pre></div></div>
             
         </li>
         
@@ -268,14 +270,12 @@ a user is currently authenticated.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-15">&#182;</a>
               </div>
-              <p>Attempts to authenticate a user via
-localStorage data or by parsing data
-from the URL hash.</p>
+              <p>check if there’s a match
+for access_token in the URL hash.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>
-  exports.authenticate = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{</pre></div></div>
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">if</span> (hashParam(<span class="hljs-string">'access_token'</span>)) {</pre></div></div>
             
         </li>
         
@@ -286,13 +286,14 @@ from the URL hash.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-16">&#182;</a>
               </div>
-              <p>First, check if a localStorage key
-exists for the access_token…</p>
+              <p>If we can parse the access_token from
+the URL hash, set the param…</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>
-    <span class="hljs-keyword">if</span> (localStorage.getItem(<span class="hljs-string">'instagram_access_token'</span>)) {</pre></div></div>
+            <div class="content"><div class='highlight'><pre>      <span class="hljs-keyword">this</span>.accessToken = hashParam(<span class="hljs-string">'access_token'</span>, <span class="hljs-literal">true</span>);
+
+    } <span class="hljs-keyword">else</span> {</pre></div></div>
             
         </li>
         
@@ -303,12 +304,17 @@ exists for the access_token…</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-17">&#182;</a>
               </div>
-              <p>…and if there is, set the
-authenticated property to true.</p>
+              <p>Otherwise, if there is nothing to parse
+from the hash, set the accessToken
+property to null</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>      <span class="hljs-keyword">this</span>.authenticated = <span class="hljs-literal">true</span>;</pre></div></div>
+            <div class="content"><div class='highlight'><pre>      <span class="hljs-keyword">this</span>.accessToken = <span class="hljs-literal">null</span>;
+
+    }
+
+  };</pre></div></div>
             
         </li>
         
@@ -319,12 +325,17 @@ authenticated property to true.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-18">&#182;</a>
               </div>
-              <p>If there is no localStorage key…</p>
+              <p>Effectively de-authenticates the current
+user by removing their access token.
+This does <strong>not</strong> revoke your app’s
+permissions on the server.</p>
 
             </div>
             
             <div class="content"><div class='highlight'><pre>
-    } <span class="hljs-keyword">else</span> {</pre></div></div>
+  exports.deauthenticate = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+    <span class="hljs-keyword">this</span>.accessToken = <span class="hljs-literal">null</span>;
+  };</pre></div></div>
             
         </li>
         
@@ -335,12 +346,9 @@ authenticated property to true.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-19">&#182;</a>
               </div>
-              <p>…then check if there’s a match
-for access_token in the URL hash.</p>
+              <h1 id="endpoints">Endpoints</h1>
 
             </div>
-            
-            <div class="content"><div class='highlight'><pre>      <span class="hljs-keyword">if</span> (hashParam(<span class="hljs-string">'access_token'</span>)) {</pre></div></div>
             
         </li>
         
@@ -350,99 +358,6 @@ for access_token in the URL hash.</p>
               
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-20">&#182;</a>
-              </div>
-              <p>If we can parse the access_token from
-the URL hash, set the localStorage param…</p>
-
-            </div>
-            
-            <div class="content"><div class='highlight'><pre>        localStorage.setItem(<span class="hljs-string">'instagram_access_token'</span>, hashParam(<span class="hljs-string">'access_token'</span>, <span class="hljs-literal">true</span>));</pre></div></div>
-            
-        </li>
-        
-        
-        <li id="section-21">
-            <div class="annotation">
-              
-              <div class="pilwrap ">
-                <a class="pilcrow" href="#section-21">&#182;</a>
-              </div>
-              <p>…and set the authenticated property to true</p>
-
-            </div>
-            
-            <div class="content"><div class='highlight'><pre>        <span class="hljs-keyword">this</span>.authenticated = <span class="hljs-literal">true</span>;
-
-      } <span class="hljs-keyword">else</span> {</pre></div></div>
-            
-        </li>
-        
-        
-        <li id="section-22">
-            <div class="annotation">
-              
-              <div class="pilwrap ">
-                <a class="pilcrow" href="#section-22">&#182;</a>
-              </div>
-              <p>Otherwise, if there is no localStorage
-key and there is nothing to parse from
-the hash, set the authenticated
-property to false</p>
-
-            </div>
-            
-            <div class="content"><div class='highlight'><pre>        <span class="hljs-keyword">this</span>.authenticated = <span class="hljs-literal">false</span>;
-
-      }
-
-    }
-
-  };</pre></div></div>
-            
-        </li>
-        
-        
-        <li id="section-23">
-            <div class="annotation">
-              
-              <div class="pilwrap ">
-                <a class="pilcrow" href="#section-23">&#182;</a>
-              </div>
-              <p>Effectively de-authenticates the current
-user by removing their access token from
-localStorage and setting the authenticated
-property to false. This does <strong>not</strong>
-revoke your app’s permissions on the server.</p>
-
-            </div>
-            
-            <div class="content"><div class='highlight'><pre>
-  exports.deauthenticate = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
-    localStorage.removeItem(<span class="hljs-string">'instagram_access_token'</span>);
-    <span class="hljs-keyword">this</span>.authenticated = <span class="hljs-literal">false</span>;
-  };</pre></div></div>
-            
-        </li>
-        
-        
-        <li id="section-24">
-            <div class="annotation">
-              
-              <div class="pilwrap ">
-                <a class="pilcrow" href="#section-24">&#182;</a>
-              </div>
-              <h1 id="endpoints">Endpoints</h1>
-
-            </div>
-            
-        </li>
-        
-        
-        <li id="section-25">
-            <div class="annotation">
-              
-              <div class="pilwrap ">
-                <a class="pilcrow" href="#section-25">&#182;</a>
               </div>
               <h2 id="users">Users</h2>
 
@@ -456,11 +371,11 @@ revoke your app’s permissions on the server.</p>
         </li>
         
         
-        <li id="section-26">
+        <li id="section-21">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-26">&#182;</a>
+                <a class="pilcrow" href="#section-21">&#182;</a>
               </div>
               <h3 id="fetching-the-authenticated-users-s-profile">Fetching the authenticated users’s profile</h3>
 
@@ -477,11 +392,11 @@ revoke your app’s permissions on the server.</p>
         </li>
         
         
-        <li id="section-27">
+        <li id="section-22">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-27">&#182;</a>
+                <a class="pilcrow" href="#section-22">&#182;</a>
               </div>
               <h3 id="fetching-the-authenticated-user-s-media">Fetching the authenticated user’s media</h3>
 
@@ -493,11 +408,11 @@ revoke your app’s permissions on the server.</p>
         </li>
         
         
-        <li id="section-28">
+        <li id="section-23">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-28">&#182;</a>
+                <a class="pilcrow" href="#section-23">&#182;</a>
               </div>
               <p>Make the options argument optional</p>
 
@@ -511,11 +426,11 @@ revoke your app’s permissions on the server.</p>
         </li>
         
         
-        <li id="section-29">
+        <li id="section-24">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-29">&#182;</a>
+                <a class="pilcrow" href="#section-24">&#182;</a>
               </div>
               <p>Make a request to the API</p>
 
@@ -532,11 +447,11 @@ revoke your app’s permissions on the server.</p>
         </li>
         
         
-        <li id="section-30">
+        <li id="section-25">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-30">&#182;</a>
+                <a class="pilcrow" href="#section-25">&#182;</a>
               </div>
               <h3 id="fetching-the-authenticated-user-s-activity-feed">Fetching the authenticated user’s activity feed</h3>
 
@@ -548,11 +463,11 @@ revoke your app’s permissions on the server.</p>
         </li>
         
         
-        <li id="section-31">
+        <li id="section-26">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-31">&#182;</a>
+                <a class="pilcrow" href="#section-26">&#182;</a>
               </div>
               <p>Make the options argument optional</p>
 
@@ -566,11 +481,11 @@ revoke your app’s permissions on the server.</p>
         </li>
         
         
-        <li id="section-32">
+        <li id="section-27">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-32">&#182;</a>
+                <a class="pilcrow" href="#section-27">&#182;</a>
               </div>
               <p>Make a request to the API</p>
 
@@ -587,11 +502,11 @@ revoke your app’s permissions on the server.</p>
         </li>
         
         
-        <li id="section-33">
+        <li id="section-28">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-33">&#182;</a>
+                <a class="pilcrow" href="#section-28">&#182;</a>
               </div>
               <h3 id="fetching-the-authenticated-user-s-favorites-">Fetching the authenticated user’s favorites.</h3>
 
@@ -603,11 +518,11 @@ revoke your app’s permissions on the server.</p>
         </li>
         
         
-        <li id="section-34">
+        <li id="section-29">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-34">&#182;</a>
+                <a class="pilcrow" href="#section-29">&#182;</a>
               </div>
               <p>Make the options argument optional</p>
 
@@ -621,11 +536,11 @@ revoke your app’s permissions on the server.</p>
         </li>
         
         
-        <li id="section-35">
+        <li id="section-30">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-35">&#182;</a>
+                <a class="pilcrow" href="#section-30">&#182;</a>
               </div>
               <p>Make a request to the API</p>
 
@@ -642,11 +557,11 @@ revoke your app’s permissions on the server.</p>
         </li>
         
         
-        <li id="section-36">
+        <li id="section-31">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-36">&#182;</a>
+                <a class="pilcrow" href="#section-31">&#182;</a>
               </div>
               <h3 id="fetching-a-list-of-relationship-requests-for-the-currently-authenticated-user">Fetching a list of relationship requests for the currently authenticated user</h3>
 
@@ -658,11 +573,11 @@ revoke your app’s permissions on the server.</p>
         </li>
         
         
-        <li id="section-37">
+        <li id="section-32">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-37">&#182;</a>
+                <a class="pilcrow" href="#section-32">&#182;</a>
               </div>
               <p>Make a request to the API</p>
 
@@ -678,11 +593,11 @@ revoke your app’s permissions on the server.</p>
         </li>
         
         
-        <li id="section-38">
+        <li id="section-33">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-38">&#182;</a>
+                <a class="pilcrow" href="#section-33">&#182;</a>
               </div>
               <h3 id="getting-a-relationship-information-for-the-currently-authenciated-user-and-a-given-user-id">Getting a relationship information for the currently authenciated user and a given user ID</h3>
 
@@ -694,11 +609,11 @@ revoke your app’s permissions on the server.</p>
         </li>
         
         
-        <li id="section-39">
+        <li id="section-34">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-39">&#182;</a>
+                <a class="pilcrow" href="#section-34">&#182;</a>
               </div>
               <p>Make a request to the API</p>
 
@@ -714,11 +629,11 @@ revoke your app’s permissions on the server.</p>
         </li>
         
         
-        <li id="section-40">
+        <li id="section-35">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-40">&#182;</a>
+                <a class="pilcrow" href="#section-35">&#182;</a>
               </div>
               <h3 id="fetching-the-profile-of-a-user-by-id-or-username">Fetching the profile of a user by ID or username</h3>
 
@@ -730,11 +645,11 @@ revoke your app’s permissions on the server.</p>
         </li>
         
         
-        <li id="section-41">
+        <li id="section-36">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-41">&#182;</a>
+                <a class="pilcrow" href="#section-36">&#182;</a>
               </div>
               <p>Require that an ID or username be passed</p>
 
@@ -749,11 +664,11 @@ revoke your app’s permissions on the server.</p>
         </li>
         
         
-        <li id="section-42">
+        <li id="section-37">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-42">&#182;</a>
+                <a class="pilcrow" href="#section-37">&#182;</a>
               </div>
               <p>Make a request to the API</p>
 
@@ -769,11 +684,11 @@ revoke your app’s permissions on the server.</p>
         </li>
         
         
-        <li id="section-43">
+        <li id="section-38">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-43">&#182;</a>
+                <a class="pilcrow" href="#section-38">&#182;</a>
               </div>
               <p>Make a request to the API</p>
 
@@ -784,11 +699,11 @@ revoke your app’s permissions on the server.</p>
         </li>
         
         
-        <li id="section-44">
+        <li id="section-39">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-44">&#182;</a>
+                <a class="pilcrow" href="#section-39">&#182;</a>
               </div>
               <p>Go through the results and check for
 a perfect match, then query again with that user’s ID
@@ -813,11 +728,11 @@ otherwise return nothing.</p>
         </li>
         
         
-        <li id="section-45">
+        <li id="section-40">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-45">&#182;</a>
+                <a class="pilcrow" href="#section-40">&#182;</a>
               </div>
               <p>Call the initial callback, passing the result</p>
 
@@ -836,11 +751,11 @@ otherwise return nothing.</p>
         </li>
         
         
-        <li id="section-46">
+        <li id="section-41">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-46">&#182;</a>
+                <a class="pilcrow" href="#section-41">&#182;</a>
               </div>
               <h3 id="fetching-the-media-of-a-user-id-or-username">Fetching the media of a user ID or username</h3>
 
@@ -852,11 +767,11 @@ otherwise return nothing.</p>
         </li>
         
         
-        <li id="section-47">
+        <li id="section-42">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-47">&#182;</a>
+                <a class="pilcrow" href="#section-42">&#182;</a>
               </div>
               <p>Require that an ID be passed</p>
 
@@ -870,11 +785,11 @@ otherwise return nothing.</p>
         </li>
         
         
-        <li id="section-48">
+        <li id="section-43">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-48">&#182;</a>
+                <a class="pilcrow" href="#section-43">&#182;</a>
               </div>
               <p>Make the options argument optional</p>
 
@@ -889,11 +804,11 @@ otherwise return nothing.</p>
         </li>
         
         
-        <li id="section-49">
+        <li id="section-44">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-49">&#182;</a>
+                <a class="pilcrow" href="#section-44">&#182;</a>
               </div>
               <p>If we’re looking up the user by ID…</p>
 
@@ -905,11 +820,11 @@ otherwise return nothing.</p>
         </li>
         
         
-        <li id="section-50">
+        <li id="section-45">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-50">&#182;</a>
+                <a class="pilcrow" href="#section-45">&#182;</a>
               </div>
               <p>Make a request to that API</p>
 
@@ -926,11 +841,11 @@ otherwise return nothing.</p>
         </li>
         
         
-        <li id="section-51">
+        <li id="section-46">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-51">&#182;</a>
+                <a class="pilcrow" href="#section-46">&#182;</a>
               </div>
               <p>Or rather looking up the user by username…</p>
 
@@ -942,11 +857,11 @@ otherwise return nothing.</p>
         </li>
         
         
-        <li id="section-52">
+        <li id="section-47">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-52">&#182;</a>
+                <a class="pilcrow" href="#section-47">&#182;</a>
               </div>
               <p>…then first search for the username…</p>
 
@@ -957,11 +872,11 @@ otherwise return nothing.</p>
         </li>
         
         
-        <li id="section-53">
+        <li id="section-48">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-53">&#182;</a>
+                <a class="pilcrow" href="#section-48">&#182;</a>
               </div>
               <p>If the initial user search yields any
 results, then just return the first, but
@@ -980,11 +895,11 @@ otherwise return nothing.</p>
         </li>
         
         
-        <li id="section-54">
+        <li id="section-49">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-54">&#182;</a>
+                <a class="pilcrow" href="#section-49">&#182;</a>
               </div>
               <p>Make a request to that API</p>
 
@@ -1013,11 +928,11 @@ otherwise return nothing.</p>
         </li>
         
         
-        <li id="section-55">
+        <li id="section-50">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-55">&#182;</a>
+                <a class="pilcrow" href="#section-50">&#182;</a>
               </div>
               <h3 id="searching-for-users-by-username">Searching for users by username</h3>
 
@@ -1029,11 +944,11 @@ otherwise return nothing.</p>
         </li>
         
         
-        <li id="section-56">
+        <li id="section-51">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-56">&#182;</a>
+                <a class="pilcrow" href="#section-51">&#182;</a>
               </div>
               <p>Require that a search term be passed</p>
 
@@ -1046,11 +961,11 @@ otherwise return nothing.</p>
         </li>
         
         
-        <li id="section-57">
+        <li id="section-52">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-57">&#182;</a>
+                <a class="pilcrow" href="#section-52">&#182;</a>
               </div>
               <p>Make the options argument optional</p>
 
@@ -1064,11 +979,11 @@ otherwise return nothing.</p>
         </li>
         
         
-        <li id="section-58">
+        <li id="section-53">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-58">&#182;</a>
+                <a class="pilcrow" href="#section-53">&#182;</a>
               </div>
               <p>Add the search term to the options object</p>
 
@@ -1079,11 +994,11 @@ otherwise return nothing.</p>
         </li>
         
         
-        <li id="section-59">
+        <li id="section-54">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-59">&#182;</a>
+                <a class="pilcrow" href="#section-54">&#182;</a>
               </div>
               <p>Make a request to the API</p>
 
@@ -1100,11 +1015,11 @@ otherwise return nothing.</p>
         </li>
         
         
-        <li id="section-60">
+        <li id="section-55">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-60">&#182;</a>
+                <a class="pilcrow" href="#section-55">&#182;</a>
               </div>
               <h3 id="fetching-a-list-of-users-that-user-id-follows">Fetching a list of users that user [id] follows</h3>
 
@@ -1116,11 +1031,11 @@ otherwise return nothing.</p>
         </li>
         
         
-        <li id="section-61">
+        <li id="section-56">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-61">&#182;</a>
+                <a class="pilcrow" href="#section-56">&#182;</a>
               </div>
               <p>Make a request to the API</p>
 
@@ -1136,11 +1051,11 @@ otherwise return nothing.</p>
         </li>
         
         
-        <li id="section-62">
+        <li id="section-57">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-62">&#182;</a>
+                <a class="pilcrow" href="#section-57">&#182;</a>
               </div>
               <h3 id="fetching-a-list-of-followers-of-user-id-">Fetching a list of followers of user [id]</h3>
 
@@ -1152,11 +1067,11 @@ otherwise return nothing.</p>
         </li>
         
         
-        <li id="section-63">
+        <li id="section-58">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-63">&#182;</a>
+                <a class="pilcrow" href="#section-58">&#182;</a>
               </div>
               <p>Make a request to the API</p>
 
@@ -1172,11 +1087,11 @@ otherwise return nothing.</p>
         </li>
         
         
-        <li id="section-64">
+        <li id="section-59">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-64">&#182;</a>
+                <a class="pilcrow" href="#section-59">&#182;</a>
               </div>
               <h2 id="media">Media</h2>
 
@@ -1190,11 +1105,11 @@ otherwise return nothing.</p>
         </li>
         
         
-        <li id="section-65">
+        <li id="section-60">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-65">&#182;</a>
+                <a class="pilcrow" href="#section-60">&#182;</a>
               </div>
               <p>Make a request to the API</p>
 
@@ -1214,11 +1129,11 @@ otherwise return nothing.</p>
         </li>
         
         
-        <li id="section-66">
+        <li id="section-61">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-66">&#182;</a>
+                <a class="pilcrow" href="#section-61">&#182;</a>
               </div>
               <p>Require that a latitude and longitude are
 passed in, at a minimum.</p>
@@ -1232,11 +1147,11 @@ passed in, at a minimum.</p>
         </li>
         
         
-        <li id="section-67">
+        <li id="section-62">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-67">&#182;</a>
+                <a class="pilcrow" href="#section-62">&#182;</a>
               </div>
               <p>Make a request to the API</p>
 
@@ -1255,11 +1170,11 @@ passed in, at a minimum.</p>
         </li>
         
         
-        <li id="section-68">
+        <li id="section-63">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-68">&#182;</a>
+                <a class="pilcrow" href="#section-63">&#182;</a>
               </div>
               <p>Make a request to the API</p>
 
@@ -1281,11 +1196,11 @@ passed in, at a minimum.</p>
         </li>
         
         
-        <li id="section-69">
+        <li id="section-64">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-69">&#182;</a>
+                <a class="pilcrow" href="#section-64">&#182;</a>
               </div>
               <p>Make a request to the API</p>
 
@@ -1307,11 +1222,11 @@ passed in, at a minimum.</p>
         </li>
         
         
-        <li id="section-70">
+        <li id="section-65">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-70">&#182;</a>
+                <a class="pilcrow" href="#section-65">&#182;</a>
               </div>
               <p>Make a request to the API</p>
 
@@ -1327,11 +1242,11 @@ passed in, at a minimum.</p>
         </li>
         
         
-        <li id="section-71">
+        <li id="section-66">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-71">&#182;</a>
+                <a class="pilcrow" href="#section-66">&#182;</a>
               </div>
               <h2 id="tags">Tags</h2>
 
@@ -1345,11 +1260,11 @@ passed in, at a minimum.</p>
         </li>
         
         
-        <li id="section-72">
+        <li id="section-67">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-72">&#182;</a>
+                <a class="pilcrow" href="#section-67">&#182;</a>
               </div>
               <p>We need at least a tag name to get information for</p>
 
@@ -1362,11 +1277,11 @@ passed in, at a minimum.</p>
         </li>
         
         
-        <li id="section-73">
+        <li id="section-68">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-73">&#182;</a>
+                <a class="pilcrow" href="#section-68">&#182;</a>
               </div>
               <p>Make a request to the API</p>
 
@@ -1384,11 +1299,11 @@ passed in, at a minimum.</p>
         </li>
         
         
-        <li id="section-74">
+        <li id="section-69">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-74">&#182;</a>
+                <a class="pilcrow" href="#section-69">&#182;</a>
               </div>
               <p>We need at least a tag name to work with</p>
 
@@ -1401,11 +1316,11 @@ passed in, at a minimum.</p>
         </li>
         
         
-        <li id="section-75">
+        <li id="section-70">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-75">&#182;</a>
+                <a class="pilcrow" href="#section-70">&#182;</a>
               </div>
               <p>Make the options argument optional</p>
 
@@ -1419,11 +1334,11 @@ passed in, at a minimum.</p>
         </li>
         
         
-        <li id="section-76">
+        <li id="section-71">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-76">&#182;</a>
+                <a class="pilcrow" href="#section-71">&#182;</a>
               </div>
               <p>Make a request to the API</p>
 
@@ -1442,11 +1357,11 @@ passed in, at a minimum.</p>
         </li>
         
         
-        <li id="section-77">
+        <li id="section-72">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-77">&#182;</a>
+                <a class="pilcrow" href="#section-72">&#182;</a>
               </div>
               <p>We need at least a tag string to search for</p>
 
@@ -1463,11 +1378,11 @@ passed in, at a minimum.</p>
         </li>
         
         
-        <li id="section-78">
+        <li id="section-73">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-78">&#182;</a>
+                <a class="pilcrow" href="#section-73">&#182;</a>
               </div>
               <p>Make a request to the API</p>
 
@@ -1484,11 +1399,11 @@ passed in, at a minimum.</p>
         </li>
         
         
-        <li id="section-79">
+        <li id="section-74">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-79">&#182;</a>
+                <a class="pilcrow" href="#section-74">&#182;</a>
               </div>
               <h2 id="locations">Locations</h2>
 
@@ -1502,11 +1417,11 @@ passed in, at a minimum.</p>
         </li>
         
         
-        <li id="section-80">
+        <li id="section-75">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-80">&#182;</a>
+                <a class="pilcrow" href="#section-75">&#182;</a>
               </div>
               <p>We need at least a location ID to work with</p>
 
@@ -1519,11 +1434,11 @@ passed in, at a minimum.</p>
         </li>
         
         
-        <li id="section-81">
+        <li id="section-76">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-81">&#182;</a>
+                <a class="pilcrow" href="#section-76">&#182;</a>
               </div>
               <p>Make a request to the API</p>
 
@@ -1541,11 +1456,11 @@ passed in, at a minimum.</p>
         </li>
         
         
-        <li id="section-82">
+        <li id="section-77">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-82">&#182;</a>
+                <a class="pilcrow" href="#section-77">&#182;</a>
               </div>
               <p>We need at least a location ID to work with</p>
 
@@ -1558,11 +1473,11 @@ passed in, at a minimum.</p>
         </li>
         
         
-        <li id="section-83">
+        <li id="section-78">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-83">&#182;</a>
+                <a class="pilcrow" href="#section-78">&#182;</a>
               </div>
               <p>Make the options argument optional</p>
 
@@ -1576,11 +1491,11 @@ passed in, at a minimum.</p>
         </li>
         
         
-        <li id="section-84">
+        <li id="section-79">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-84">&#182;</a>
+                <a class="pilcrow" href="#section-79">&#182;</a>
               </div>
               <p>Make a request to the API</p>
 
@@ -1600,11 +1515,11 @@ passed in, at a minimum.</p>
         </li>
         
         
-        <li id="section-85">
+        <li id="section-80">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-85">&#182;</a>
+                <a class="pilcrow" href="#section-80">&#182;</a>
               </div>
               <p>We need at LEAST a lat/lng pair, or a Foursquare ID to work with</p>
 
@@ -1617,11 +1532,11 @@ passed in, at a minimum.</p>
         </li>
         
         
-        <li id="section-86">
+        <li id="section-81">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-86">&#182;</a>
+                <a class="pilcrow" href="#section-81">&#182;</a>
               </div>
               <p>Make a request to the API</p>
 
@@ -1638,11 +1553,11 @@ passed in, at a minimum.</p>
         </li>
         
         
-        <li id="section-87">
+        <li id="section-82">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-87">&#182;</a>
+                <a class="pilcrow" href="#section-82">&#182;</a>
               </div>
               <h1 id="helpers">Helpers</h1>
 
@@ -1651,11 +1566,11 @@ passed in, at a minimum.</p>
         </li>
         
         
-        <li id="section-88">
+        <li id="section-83">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-88">&#182;</a>
+                <a class="pilcrow" href="#section-83">&#182;</a>
               </div>
               <p>Returns the client-specific authentication URL that is created upon initialization.</p>
 
@@ -1664,11 +1579,11 @@ passed in, at a minimum.</p>
         </li>
         
         
-        <li id="section-89">
+        <li id="section-84">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-89">&#182;</a>
+                <a class="pilcrow" href="#section-84">&#182;</a>
               </div>
               <p>Parses a given parameter from the browsers hash.
 Optionally, the parameter can be removed from
@@ -1682,11 +1597,11 @@ the URL upon successful matching.</p>
         </li>
         
         
-        <li id="section-90">
+        <li id="section-85">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-90">&#182;</a>
+                <a class="pilcrow" href="#section-85">&#182;</a>
               </div>
               <p>Create a RegExp object for parsing params</p>
 
@@ -1697,11 +1612,11 @@ the URL upon successful matching.</p>
         </li>
         
         
-        <li id="section-91">
+        <li id="section-86">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-91">&#182;</a>
+                <a class="pilcrow" href="#section-86">&#182;</a>
               </div>
               <p>Look for matches in the windows hash</p>
 
@@ -1712,11 +1627,11 @@ the URL upon successful matching.</p>
         </li>
         
         
-        <li id="section-92">
+        <li id="section-87">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-92">&#182;</a>
+                <a class="pilcrow" href="#section-87">&#182;</a>
               </div>
               <p>If matches are found…</p>
 
@@ -1727,11 +1642,11 @@ the URL upon successful matching.</p>
         </li>
         
         
-        <li id="section-93">
+        <li id="section-88">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-93">&#182;</a>
+                <a class="pilcrow" href="#section-88">&#182;</a>
               </div>
               <p>…then remove the parameter if specified</p>
 
@@ -1745,11 +1660,11 @@ the URL upon successful matching.</p>
         </li>
         
         
-        <li id="section-94">
+        <li id="section-89">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-94">&#182;</a>
+                <a class="pilcrow" href="#section-89">&#182;</a>
               </div>
               <p>…and return the first matching param</p>
 
@@ -1762,11 +1677,11 @@ the URL upon successful matching.</p>
         </li>
         
         
-        <li id="section-95">
+        <li id="section-90">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-95">&#182;</a>
+                <a class="pilcrow" href="#section-90">&#182;</a>
               </div>
               <p>Otherwise return false if no matching params are found</p>
 
@@ -1779,11 +1694,11 @@ the URL upon successful matching.</p>
         </li>
         
         
-        <li id="section-96">
+        <li id="section-91">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-96">&#182;</a>
+                <a class="pilcrow" href="#section-91">&#182;</a>
               </div>
               <p>Makes JSONP requests to the Instagram API</p>
 
@@ -1797,7 +1712,7 @@ the URL upon successful matching.</p>
 
     options = options || {};
     options.data = options.data || {};
-    options.data.access_token = localStorage.getItem(<span class="hljs-string">'instagram_access_token'</span>);
+    options.data.access_token = exports.accessToken;
     options.data.callback = callbackName;
 
     <span class="hljs-keyword">var</span> queryString = serializeParams(options.data);
@@ -1829,11 +1744,11 @@ the URL upon successful matching.</p>
         </li>
         
         
-        <li id="section-97">
+        <li id="section-92">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-97">&#182;</a>
+                <a class="pilcrow" href="#section-92">&#182;</a>
               </div>
               <p>Given a JavaScript object, return a
 string suitable for passing in a URL</p>
@@ -1852,11 +1767,11 @@ string suitable for passing in a URL</p>
         </li>
         
         
-        <li id="section-98">
+        <li id="section-93">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-98">&#182;</a>
+                <a class="pilcrow" href="#section-93">&#182;</a>
               </div>
               <p>Define a custom error object</p>
 
@@ -1873,11 +1788,11 @@ string suitable for passing in a URL</p>
         </li>
         
         
-        <li id="section-99">
+        <li id="section-94">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-99">&#182;</a>
+                <a class="pilcrow" href="#section-94">&#182;</a>
               </div>
               <p>Return new instances of the endpoint
 helpers as top-level keys</p>

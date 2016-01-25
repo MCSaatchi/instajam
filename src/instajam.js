@@ -49,11 +49,8 @@
     // instead of requesting our own
     if (options.accessToken) {
 
-        // set the local storage param
-        localStorage.setItem('instagram_access_token', options.accessToken);
-
-        // ...and set the authenticated property to true
-        this.authenticated = true;
+        // set the accessToken
+        this.accessToken = options.accessToken;
 
         // skip the normal authentication
         return this;
@@ -69,59 +66,37 @@
 
   // # Authentication
 
-  // Attempts to authenticate a user via
-  // localStorage data or by parsing data
-  // from the URL hash.
+  // Attempts to authenticate a user by
+  // parsing data from the URL hash.
 
   exports.authenticate = function() {
 
-    // First, check if a localStorage key
-    // exists for the access_token...
+    // check if there's a match
+    // for access_token in the URL hash.
+    if (hashParam('access_token')) {
 
-    if (localStorage.getItem('instagram_access_token')) {
-
-      // ...and if there is, set the
-      // authenticated property to true.
-      this.authenticated = true;
-
-    // If there is no localStorage key...
+      // If we can parse the access_token from
+      // the URL hash, set the param...
+      this.accessToken = hashParam('access_token', true);
 
     } else {
 
-      // ...then check if there's a match
-      // for access_token in the URL hash.
-      if (hashParam('access_token')) {
-
-        // If we can parse the access_token from
-        // the URL hash, set the localStorage param...
-        localStorage.setItem('instagram_access_token', hashParam('access_token', true));
-
-        // ...and set the authenticated property to true
-        this.authenticated = true;
-
-      } else {
-
-        // Otherwise, if there is no localStorage
-        // key and there is nothing to parse from
-        // the hash, set the authenticated
-        // property to false
-        this.authenticated = false;
-
-      }
+      // Otherwise, if there is nothing to parse
+      // from the hash, set the accessToken
+      // property to null
+      this.accessToken = null;
 
     }
 
   };
 
   // Effectively de-authenticates the current
-  // user by removing their access token from
-  // localStorage and setting the authenticated
-  // property to false. This does **not**
-  // revoke your app's permissions on the server.
+  // user by removing their access token.
+  // This does **not** revoke your app's
+  // permissions on the server.
 
   exports.deauthenticate = function() {
-    localStorage.removeItem('instagram_access_token');
-    this.authenticated = false;
+    this.accessToken = null;
   };
 
   // # Endpoints
@@ -626,7 +601,7 @@
 
     options = options || {};
     options.data = options.data || {};
-    options.data.access_token = localStorage.getItem('instagram_access_token');
+    options.data.access_token = exports.accessToken;
     options.data.callback = callbackName;
 
     var queryString = serializeParams(options.data);
